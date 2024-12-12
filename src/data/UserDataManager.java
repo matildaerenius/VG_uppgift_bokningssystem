@@ -3,6 +3,7 @@ package data;
 import models.Admin;
 import models.Customer;
 import models.User;
+import data.PasswordUtil;
 
 import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,12 +35,12 @@ public class UserDataManager {
                     String name = parts[1];
                     String email = parts[2];
                     String phoneNumber = parts[3];
-                    String password = parts[4];
+                    String hashedPassword  = parts[4];
                     String userType = parts.length == 6 ? parts[5] : "Customer";
 
                     User user = userType.equalsIgnoreCase("Admin") ?
-                            new Admin(id, name, email, phoneNumber, password) :
-                            new Customer(id, name, email, phoneNumber, password);
+                            new Admin(id, name, email, phoneNumber, hashedPassword) :
+                            new Customer(id, name, email, phoneNumber, hashedPassword);
 
                     users.put(id, user); // Add to the map
                 }
@@ -55,13 +56,17 @@ public class UserDataManager {
             return false; // User finns redan med det personnumret
         }
 
+        // Kryptera lösenord
+        String hashedPassword = PasswordUtil.hashPassword(newUser.getPassword());
+        newUser.setPassword(hashedPassword);
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
             writer.write(String.format("%s,%s,%s,%s,%s,%s\n",
                     userId,
                     newUser.getName(),
                     newUser.getEmail(),
                     newUser.getPhoneNumber(),
-                    newUser.getPassword(),
+                    hashedPassword,
                     userType));
         } catch (IOException e) {
             return false;
@@ -73,7 +78,7 @@ public class UserDataManager {
 
     public User authenticateUser(String id, String password) {
         User user = users.get(id);
-        return (user != null && user.getPassword().equals(password)) ? user : null;
+        return (user != null && PasswordUtil.verifyPassword(password, user.getPassword())) ? user : null;
     }
 
 }
