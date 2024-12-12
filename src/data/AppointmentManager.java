@@ -75,6 +75,20 @@ public class AppointmentManager {
     public List<Booking> getAppointmentsForUser(Customer customer) {
         return DatabaseManager.getInstance().getAppointmentsForUser(customer);
     }
+
+    public boolean adminCancelAppointment(TimeFrame timeFrame) {
+        List<Booking> bookings = databaseDao.getAllBookings();
+        for (Booking booking : bookings) {
+            if (booking.getTimeFrame().equals(timeFrame) && booking.isBooked()) {
+                // Gör bokningen tillgänglig
+                booking.setCustomer(null);
+                booking.setDescription("Available");
+                databaseDao.updateBookingStatus(timeFrame, null);
+                return true;
+            }
+        }
+        return false; // Ingen matchande bokning hittades
+    }
 }
 
 

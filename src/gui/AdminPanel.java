@@ -1,5 +1,6 @@
 package gui;
 
+import data.AppointmentManager;
 import data.DatabaseManager;
 import models.Booking;
 import models.TimeFrame;
@@ -9,7 +10,7 @@ import java.awt.*;
 
 public class AdminPanel extends JPanel {
 
-    private final JTextArea bookingDetails;
+    private final JPanel bookingDetails;
 
     public AdminPanel() {
 
@@ -39,10 +40,10 @@ public class AdminPanel extends JPanel {
         overlayPanel.add(headerLabel, BorderLayout.NORTH);;
 
         // Textområdet för att visa bokningar
-        bookingDetails = new JTextArea();
+        bookingDetails = new JPanel();
+        bookingDetails.setLayout(new BoxLayout(bookingDetails, BoxLayout.Y_AXIS));
         bookingDetails.setFont(font.deriveFont(Font.PLAIN).deriveFont(14.0f));
         bookingDetails.setForeground(Color.BLACK);
-        bookingDetails.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(bookingDetails);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
@@ -74,23 +75,56 @@ public class AdminPanel extends JPanel {
     }
 
     private void updateBookingDetails() {
+        bookingDetails.removeAll(); // Rensa tidigare innehåll
+        bookingDetails.setLayout(new BoxLayout(bookingDetails, BoxLayout.Y_AXIS));
+
         var allBookings = DatabaseManager.getInstance().getAllBookings();
+
+        for (Booking booking : allBookings) {
+            JPanel bookingPanel = new JPanel();
+            bookingPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         // TODO: sortera bokningarna i ordning
 
-        StringBuilder details = new StringBuilder("Alla bokningar:\n");
-        for (Booking booking : allBookings) {
-            details.append(booking.getTimeFrame().getDate()).append(" | ")
-                    .append(booking.getTimeFrame().getStartTime()).append(" - ")
-                    .append(booking.getTimeFrame().getEndTime()).append(" | ");
+            // Skapa etikett med bokningsdetaljer
+            JLabel bookingLabel = new JLabel(booking.getTimeFrame().getDate() + " | " +
+                    booking.getTimeFrame().getStartTime() + " - " +
+                    booking.getTimeFrame().getEndTime() + " | " +
+                    (booking.isBooked() ? "Bokad av: " + booking.getCustomer().getName() : "Tillgänglig"));
+            bookingLabel.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+            bookingPanel.add(bookingLabel);
+
+            // Lägg till "Avboka"-knappen endast om bokningen är bokad
             if (booking.isBooked()) {
-                details.append("Bokad av: ").append(booking.getCustomer().getName());
-            } else {
-                details.append("Tillgänglig");
+                JButton cancelButton = new JButton("Avboka");
+                cancelButton.setFont(new Font("Times New Roman", Font.BOLD, 12));
+                cancelButton.setBackground(Color.WHITE);
+                cancelButton.addActionListener(e -> adminCancelTime(booking.getTimeFrame()));
+                bookingPanel.add(cancelButton);
             }
-            details.append("\n");
+
+            bookingDetails.add(bookingPanel); // Lägg till raden i huvudpanelen
         }
-        bookingDetails.setText(details.toString());
+
+        bookingDetails.revalidate(); // Uppdatera layout
+        bookingDetails.repaint();   // Rita om komponenterna
+    }
+
+    private void adminCancelTime(TimeFrame timeFrame) {
+        int choice = JOptionPane.showConfirmDialog(this,
+                "Är du säker på att du vill avboka tiden?\n" + timeFrame,
+                "Bekräfta avbokning",
+                JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            boolean success = AppointmentManager.getInstance(DatabaseManager.getInstance()).adminCancelAppointment(timeFrame);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Bokningen har avbokats.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Misslyckades med att avboka bokningen.");
+            }
+            updateBookingDetails(); // Uppdatera vy
+        }
     }
 
     private void addAvailableTime() {
