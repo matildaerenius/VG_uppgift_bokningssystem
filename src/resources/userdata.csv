@@ -1,0 +1,6 @@
+ID,name,email,phonenumber,password,usertype
+0107202905,matilda erenius,matildaerenius@hotmail.com,0767159136,123456789,Customer
+0012014122,Rose Philipsen,rose@gmail.com,1234567899,123123,Customer
+0000000000,admin 123,admin@gmail.com,1111111111,123123,Admin
+1111111111,test123 123,12@me.se,2222222222,1234,Customer
+0012014123,rose philipsen,rosekristine@me.com,0709124202,prut123,Customer
