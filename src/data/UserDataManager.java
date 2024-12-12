@@ -41,7 +41,7 @@ public class UserDataManager {
                             new Admin(id, name, email, phoneNumber, password) :
                             new Customer(id, name, email, phoneNumber, password);
 
-                    users.put(id, user); // Add to the map
+                    users.put(id, user);
                 }
             }
         } catch (IOException e) {
