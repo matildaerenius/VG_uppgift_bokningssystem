@@ -75,7 +75,7 @@ public class AdminPanel extends JPanel {
     }
 
     private void updateBookingDetails() {
-        bookingDetails.removeAll(); // Rensa tidigare innehåll
+        bookingDetails.removeAll();
         bookingDetails.setLayout(new BoxLayout(bookingDetails, BoxLayout.Y_AXIS));
 
         var allBookings = DatabaseManager.getInstance().getAllBookings();
@@ -86,7 +86,7 @@ public class AdminPanel extends JPanel {
 
         // TODO: sortera bokningarna i ordning
 
-            // Skapa etikett med bokningsdetaljer
+
             JLabel bookingLabel = new JLabel(booking.getTimeFrame().getDate() + " | " +
                     booking.getTimeFrame().getStartTime() + " - " +
                     booking.getTimeFrame().getEndTime() + " | " +
@@ -94,7 +94,7 @@ public class AdminPanel extends JPanel {
             bookingLabel.setFont(new Font("Times New Roman", Font.PLAIN, 14));
             bookingPanel.add(bookingLabel);
 
-            // Lägg till "Avboka"-knappen endast om bokningen är bokad
+            // Lägger till "Avboka"-knappen endast om bokningen är bokad
             if (booking.isBooked()) {
                 JButton cancelButton = new JButton("Avboka");
                 cancelButton.setFont(new Font("Times New Roman", Font.BOLD, 12));
@@ -103,11 +103,11 @@ public class AdminPanel extends JPanel {
                 bookingPanel.add(cancelButton);
             }
 
-            bookingDetails.add(bookingPanel); // Lägg till raden i huvudpanelen
+            bookingDetails.add(bookingPanel);
         }
 
-        bookingDetails.revalidate(); // Uppdatera layout
-        bookingDetails.repaint();   // Rita om komponenterna
+        bookingDetails.revalidate();
+        bookingDetails.repaint();
     }
 
     private void adminCancelTime(TimeFrame timeFrame) {
