@@ -12,15 +12,23 @@ public class UserDataManager {
     private static UserDataManager instance;
     private final ConcurrentHashMap<String, User> users;
     private static final String FILE_PATH = "src/resources/userdata.csv";
+    private final PasswordUtil passwordUtil;
 
-    private UserDataManager() {
-        users = new ConcurrentHashMap<>();
+    private UserDataManager(PasswordStrategy passwordStrategy) {
+        this.users = new ConcurrentHashMap<>();
+        this.passwordUtil = new PasswordUtil(passwordStrategy);
         loadUsersFromFile();
     }
 
-    public static synchronized UserDataManager getInstance() {
+        public static synchronized UserDataManager getInstance() {
         if (instance == null) {
-            instance = new UserDataManager();
+            instance = new UserDataManager(new PBKDF2Strategy());
+        }
+        return instance;
+    }
+    public static synchronized UserDataManager getInstance(PasswordStrategy passwordStrategy) {
+        if (instance == null) {
+            instance = new UserDataManager(passwordStrategy);
         }
         return instance;
     }
@@ -35,10 +43,10 @@ public class UserDataManager {
                     String name = parts[1];
                     String email = parts[2];
                     String phoneNumber = parts[3];
-                    String hashedPassword  = parts[4];
+                    String password = parts[4];
                     String userType = parts.length == 6 ? parts[5] : "Customer";
 
-                    User user = UserFactory.createUser(id, name, email, phoneNumber, hashedPassword, userType);
+                    User user = UserFactory.createUser(id, name, email, phoneNumber, password, userType);
                     users.put(id, user);
 
                     users.put(id, user);
@@ -56,7 +64,7 @@ public class UserDataManager {
         }
 
         // Kryptera lösenord
-        String hashedPassword = PasswordUtil.hashPassword(newUser.getPassword());
+        String hashedPassword = passwordUtil.hashPassword(newUser.getPassword());
         newUser.setPassword(hashedPassword);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
@@ -77,7 +85,9 @@ public class UserDataManager {
 
     public User authenticateUser(String id, String password) {
         User user = users.get(id);
-        return (user != null && PasswordUtil.verifyPassword(password, user.getPassword())) ? user : null;
+        if (user != null && passwordUtil.verifyPassword(password, user.getPassword())) {
+            return user;
+        }
+        return null;
     }
-
 }

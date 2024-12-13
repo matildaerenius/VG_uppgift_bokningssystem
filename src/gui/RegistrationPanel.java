@@ -1,5 +1,6 @@
 package gui;
 
+import data.PBKDF2Strategy;
 import data.UserDataManager;
 import models.Customer;
 import models.User;
@@ -133,6 +134,7 @@ public class RegistrationPanel extends JPanel {
                 return;
             }
             // Sparar till fil
+            UserDataManager userDataManager = UserDataManager.getInstance(new PBKDF2Strategy());
             User newUser = new Customer(id, firstName + " " + lastName, email, phonenumber, password);
             boolean success = UserDataManager.getInstance().registerUser(newUser, "Customer");
             if (success) {

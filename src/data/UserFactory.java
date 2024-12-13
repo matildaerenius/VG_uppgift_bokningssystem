@@ -11,7 +11,7 @@ public class UserFactory {
         } else if (userType.equalsIgnoreCase("Customer")) {
             return new Customer(id, name, email, phoneNumber, password);
         } else {
-            throw new IllegalArgumentException("Ingen giltig user type: " + userType);
+            throw new IllegalArgumentException("Ingen giltig usertype: " + userType);
         }
     }
 }
