@@ -38,9 +38,8 @@ public class UserDataManager {
                     String hashedPassword  = parts[4];
                     String userType = parts.length == 6 ? parts[5] : "Customer";
 
-                    User user = userType.equalsIgnoreCase("Admin") ?
-                            new Admin(id, name, email, phoneNumber, hashedPassword) :
-                            new Customer(id, name, email, phoneNumber, hashedPassword);
+                    User user = UserFactory.createUser(id, name, email, phoneNumber, hashedPassword, userType);
+                    users.put(id, user);
 
                     users.put(id, user);
                 }
