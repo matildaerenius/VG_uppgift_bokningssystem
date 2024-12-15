@@ -1,7 +1,8 @@
-package gui;
+package gui.panels;
 
-import data.AppointmentManager;
-import data.DatabaseManager;
+import data.managers.AppointmentManager;
+import data.managers.DatabaseManager;
+import gui.factories.ImageFactory;
 import models.Booking;
 import models.Customer;
 

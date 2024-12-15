@@ -1,4 +1,4 @@
-package data;
+package data.factories;
 
 import models.Admin;
 import models.Customer;

@@ -1,11 +1,11 @@
-package data;
+package data.managers;
 
+import data.dao.DatabaseDao;
 import models.Booking;
 import models.Customer;
 import models.TimeFrame;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 public class AppointmentManager {

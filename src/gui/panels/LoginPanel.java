@@ -1,6 +1,8 @@
-package gui;
+package gui.panels;
 
-import data.UserDataManager;
+import data.managers.UserDataManager;
+import gui.factories.ImageFactory;
+import gui.ViewManager;
 import models.Customer;
 import models.User;
 

@@ -1,9 +1,12 @@
-package data;
+package data.managers;
 
+import data.factories.UserFactory;
+import data.strategies.PBKDF2Strategy;
+import data.strategies.PasswordStrategy;
+import data.utils.PasswordUtil;
 import models.Admin;
 import models.Customer;
 import models.User;
-import data.PasswordUtil;
 
 import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;

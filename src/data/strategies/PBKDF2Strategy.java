@@ -1,4 +1,4 @@
-package data;
+package data.strategies;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;

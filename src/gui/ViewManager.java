@@ -1,8 +1,9 @@
 package gui;
 
-import data.AppointmentManager;
-import data.DatabaseManager;
-import data.UserDataManager;
+import data.managers.AppointmentManager;
+import data.managers.DatabaseManager;
+import data.managers.UserDataManager;
+import gui.panels.*;
 import models.Admin;
 import models.Customer;
 import models.User;

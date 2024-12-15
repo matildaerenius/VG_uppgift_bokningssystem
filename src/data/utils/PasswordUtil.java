@@ -1,6 +1,8 @@
-package data;
+package data.utils;
 
-    public class PasswordUtil {
+import data.strategies.PasswordStrategy;
+
+public class PasswordUtil {
         private PasswordStrategy strategy;
 
         public PasswordUtil(PasswordStrategy strategy) {

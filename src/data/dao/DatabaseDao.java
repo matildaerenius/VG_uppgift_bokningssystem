@@ -1,4 +1,4 @@
-package data;
+package data.dao;
 
 import models.Booking;
 import models.Customer;

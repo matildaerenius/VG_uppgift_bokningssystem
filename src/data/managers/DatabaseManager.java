@@ -1,5 +1,6 @@
-package data;
+package data.managers;
 
+import data.dao.DatabaseDao;
 import models.Booking;
 import models.Customer;
 import models.TimeFrame;

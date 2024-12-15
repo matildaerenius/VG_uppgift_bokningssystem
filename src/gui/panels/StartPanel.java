@@ -1,4 +1,7 @@
-package gui;
+package gui.panels;
+
+import gui.factories.ImageFactory;
+import gui.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package data;
+package data.strategies;
 
 public interface PasswordStrategy {
     String hashPassword(String password);
