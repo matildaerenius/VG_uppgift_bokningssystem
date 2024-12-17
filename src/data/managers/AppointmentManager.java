@@ -24,26 +24,48 @@ public class AppointmentManager {
         return instance;
     }
 
-    // TODO: Denna används inte utan görs direkt i databasemanager, ta bort eller gör om så den används här istället
-    // TODO: Uppdatera BookingPanel att använda AppointmentManager.bookAppointment() istället för att direkt göra med DatabaseManager
     public boolean bookAppointment(Customer customer, String date, String startTime, String endTime) {
-        TimeFrame timeFrame = new TimeFrame(date, startTime, endTime);
-        Booking booking = new Booking(timeFrame, "Booked", customer);
+        LocalDate localDate = LocalDate.parse(date);
+        TimeFrame desiredFrame = new TimeFrame(date, startTime, endTime);
 
-        if (!timeFrameOverlaps(LocalDate.parse(date), timeFrame)) {
-            databaseDao.createBooking(booking);
-            sendConfirmation(booking);
-            return true;
+        // Söker efter en redan "Available" bokning med samma datum och tid
+        List<Booking> bookings = databaseDao.getAllBookings();
+        Booking availableBooking = null;
+        for (Booking b : bookings) {
+            if (b.getTimeFrame().getDate().equals(localDate)
+                    && b.getTimeFrame().getStartTime().equals(desiredFrame.getStartTime())
+                    && b.getTimeFrame().getEndTime().equals(desiredFrame.getEndTime())
+                    && "Available".equals(b.getDescription())
+                    && !b.isBooked()) {
+                availableBooking = b;
+                break;
+            }
         }
-        return false;
+
+        if (availableBooking == null) {
+            return false;
+        }
+
+        // Kontrollerar om tiden overlappar någon annan bokning
+        if (timeFrameOverlaps(localDate, desiredFrame, availableBooking)) {
+            return false;
+        }
+
+        availableBooking.setCustomer(customer);
+        availableBooking.setDescription("Booked");
+        databaseDao.updateBookingStatus(availableBooking.getTimeFrame(), customer);
+        sendConfirmation(availableBooking);
+        return true;
     }
 
-    // TODO: gör också så denna används inte dirre i databasemanager
-    public boolean cancelAppointment(Booking b) {
-        List<Booking> bookings = databaseDao.getAppointmentsForUser(b.getCustomer());
+
+
+    public boolean cancelAppointment(Customer customer, String date, String startTime) {
+        LocalDate localDate = LocalDate.parse(date);
+        List<Booking> bookings = databaseDao.getAppointmentsForUser(customer);
         for (Booking booking : bookings) {
-            if (booking.getTimeFrame().equals(b.getTimeFrame())) {
-                // Gör bokningen tillgänglig
+            if (booking.getTimeFrame().getDate().equals(localDate)
+                    && booking.getTimeFrame().getStartTime().toString().equals(startTime)) {
                 booking.setCustomer(null);
                 booking.setDescription("Available");
                 databaseDao.updateBookingStatus(booking.getTimeFrame(), null);
@@ -53,9 +75,11 @@ public class AppointmentManager {
         return false;
     }
 
-    private boolean timeFrameOverlaps(LocalDate date, TimeFrame newTimeFrame) {
+    private boolean timeFrameOverlaps(LocalDate date, TimeFrame newTimeFrame, Booking currentBooking) {
         List<Booking> bookings = databaseDao.getAllBookings();
         for (Booking booking : bookings) {
+            if (booking == currentBooking) continue;
+
             if (booking.getTimeFrame().getDate().equals(date)) {
                 TimeFrame existingFrame = booking.getTimeFrame();
                 if (existingFrame.getEndTime().isAfter(newTimeFrame.getStartTime()) &&
@@ -67,7 +91,7 @@ public class AppointmentManager {
         return false;
     }
 
-    // TODO: Kan tas bort, skrivs bara ut i terminalen och tas bookappointment bort behövs inte denna heller
+    // TODO: Kan tas bort, skrivs bara ut i terminalen
     private void sendConfirmation(Booking booking) {
         System.out.println("Confirmation sent for booking: " + booking.getTimeFrame());
     }
