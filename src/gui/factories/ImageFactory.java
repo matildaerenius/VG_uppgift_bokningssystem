@@ -7,7 +7,7 @@ public class ImageFactory {
 
     /**
      *
-     * @param path file path e.g. "src/resources/{image}.jpg"
+     * @param path file path e.g. "src/resources/images/{image}.jpg"
      * @param width desired width
      * @param height desired height
      * @return a scaled ImageIcon

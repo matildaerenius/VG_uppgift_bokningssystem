@@ -31,7 +31,7 @@ public class BookingPanel extends JPanel {
         setLayout(new BorderLayout());
 
         //Skapar en skalad bild
-        ImageIcon scaledIcon = ImageFactory.createScaledImageIcon("src/resources/background.jpg", 400, 500);
+        ImageIcon scaledIcon = ImageFactory.createScaledImageIcon("src/resources/images/background.jpg", 400, 500);
 
         // Lägger den skalade bilden som bakgrunden
         JLabel backgroundLabel = new JLabel(scaledIcon);

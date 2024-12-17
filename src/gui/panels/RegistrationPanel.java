@@ -20,7 +20,7 @@ public class RegistrationPanel extends JPanel {
         setPreferredSize(new Dimension(400, 550));
 
         //Skapar en skalad bild
-        ImageIcon scaledIcon = ImageFactory.createScaledImageIcon("src/resources/background.jpg", 400, 500);
+        ImageIcon scaledIcon = ImageFactory.createScaledImageIcon("src/resources/images/background.jpg", 400, 500);
 
         // Lägger den skalade bilden som bakgrunden
         JLabel backgroundLabel = new JLabel(scaledIcon);

@@ -13,7 +13,7 @@ public class DatabaseManager implements DatabaseDao {
 
     private static DatabaseManager instance;
     private final List<Booking> bookings; // Cachar bokningar i minnet
-    private static final String FILE_PATH = "src/resources/bookings.csv";
+    private static final String FILE_PATH = "src/resources/data/bookings.csv";
 
 
     private DatabaseManager() {

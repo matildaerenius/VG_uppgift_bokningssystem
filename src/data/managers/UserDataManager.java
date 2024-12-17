@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserDataManager {
     private static UserDataManager instance;
     private final ConcurrentHashMap<String, User> users;
-    private static final String FILE_PATH = "src/resources/userdata.csv";
+    private static final String FILE_PATH = "src/resources/data/userdata.csv";
     private final PasswordUtil passwordUtil;
 
     private UserDataManager(PasswordStrategy passwordStrategy) {
